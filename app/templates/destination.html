@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+Destination
+{% endblock %}
+
+
+{% block content %}
+    <div class="container bg-secondary rounded my-5 p-4">
+        <div class="float-right">
+            <a href="/travels">Home</a>        <a href="/logout">Log Out</a>
+        </div>
+
+        <h1>{{destination}}</h1>
+        <p>Planned By: {{planned_by}}</p>
+        <p>Description: {{description}}</p>
+        <p>Travel Date From: {{travel_from}}</p>
+        <p>Travel Date To: {{travel_to}}</p>
+
+        <h1>Other user's joining the trip:</h1>
+        <p>{{others}}</p>
+    </div>
+{% endblock %}

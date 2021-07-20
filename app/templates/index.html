@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login/Registration
+{% endblock %}
+
+
+{% block content %}
+    <div class="container bg-secondary rounded my-5 p-4">
+        <div class="row">
+            <div class="col-6">
+                <h1 class="mb-3 text-center">Login</h1>
+                <form action="/login" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group form-inline">
+                        <label class="font-weight-bold" for="labemail">Username :</label>
+                        <input name="username" type="text" class="form-control col-md-9 ml-auto" id="labemail" aria-describedby="emailHelp" placeholder="Enter Username">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label class="font-weight-bold" for="labpass">Password :</label>
+                        <input name="password" type="password" class="form-control col-md-9 ml-auto" id="labpass" placeholder="Enter password">
+                    </div>
+                    <div class="text-center mb-3">
+                        <button type="submit" class="btn btn-info float">Login</button>                
+                    </div>
+                </form>
+            </div>
+            <div class="col-6">
+                <form action="/registration" method="POST">
+                    {% csrf_token %}    
+                    <h1 class="mb-3 text-center">Register</h1>
+                    <div class="form-group form-inline">
+                        <label class="font-weight-bold" for="lab_fname">Name :</label>
+                        <input name="name" value="{{request.session.reg_name}}" type="text" class="form-control col-md-9 ml-auto" id="lab_fname" aria-describedby="emailHelp" placeholder="John">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label class="font-weight-bold" for="lablname">Username :</label>
+                        <input name="username" value="{{request.session.reg_username}}" type="text" class="form-control col-md-9 ml-auto" id="lablname" aria-describedby="emailHelp"  placeholder="Doe">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label class="font-weight-bold" for="labpass">Password :</label>
+                        <input name="password" type="password" class="form-control col-md-9 ml-auto" id="labpass">
+                    </div>
+                    <p>*Password should be at least 8 characters</p>
+                    <div class="form-group form-inline">
+                        <label class="font-weight-bold" for="labpassrep">Confirm PW :</label>
+                        <input name="reppassword" type="password" class="form-control col-md-9 ml-auto" id="labpassrep">
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-info float">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

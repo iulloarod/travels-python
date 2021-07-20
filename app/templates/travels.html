@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}
+Travel Dashboard
+{% endblock %}
+
+
+{% block content %}
+<div class="container bg-secondary rounded m-5 p-5">
+    <div class="float-right">
+        <a href="/logout">Log Out</a>
+    </div>
+    <div>
+        <h1>Hello, {{username}}!</h1>
+        <p>Your Trip Schedules</p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Travel Start Date</th>
+                    <th scope="col">Travel End Date</th>
+                    <th scope="col">Plan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">{{destination}}</th>
+                    <td>{{tsd}}</td>
+                    <td>{{ted}}</td>
+                    <td>{{plan}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h1>Other User's Travel Plans</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Travel Start Date</th>
+                <th scope="col">Travel End Date</th>
+                <th scope="col">Do You Want To Join?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">(())</th>
+                <td>(())</td>
+                <td>(())</td>
+                <td>(())</td>
+                <td>(())</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="float-right">
+        <a href="/travels/add">Add Travel Plan</a>
+    </div>
+
+
+
+</div>
+{% endblock %}
