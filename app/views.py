@@ -4,7 +4,6 @@ from django.http import request
 from .models import User, Trip
 from datetime import datetime, date
 import bcrypt
-from itertools import chain
 
 
 def index(request):
@@ -21,11 +20,16 @@ def registration(request):
         if len(errors) > 0:
             for key, value in errors.items():
                 messages.error(request, value)
+            return redirect('')
+        # username duplicate finder
+        new_username_check = request.POST['username']
+        registered_username = User.objects.filter(username=new_username_check)
+        if registered_username :
+            messages.error(request,"ERROR: This username already exists.")
             return redirect('/')
         # droping session info when register it's ok
         request.session['reg_name'] = ""
         request.session['reg_username'] = ""
-        request.session['reg_email'] = ""
         #  hashing the password
         password = request.POST['password']
         pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
@@ -39,7 +43,7 @@ def registration(request):
         # creating session.user to use later
         request.session['user'] = {
                 "id"    : new_user.id,
-                "name"  : f"{new_user.username}",
+                "name"  : f"{new_user.name}",
             }
         messages.success(request, "Welcome User!")
         return redirect("/travels")
@@ -54,7 +58,7 @@ def login(request):
             if bcrypt.checkpw(request.POST['password'].encode(), log_user.password.encode()):
                 user_logged = {
                     "id"    : log_user.id,
-                    "name"  : f"{log_user.username}",
+                    "name"  : f"{log_user.name}",
                 }
                 request.session['user'] = user_logged
                 messages.success(request, "Loged.")
@@ -71,14 +75,15 @@ def travels(request):
         return redirect("/login")
     else:
         user = User.objects.get(id=request.session['user']['id'])
-        trip_info = Trip.objects.all()
+        trip_info = Trip.objects.filter(travels=user.id)
+
+        not_this_user = User.objects.exclude(id=request.session['user']['id'])
+        not_this_trip_info = Trip.objects.exclude(travels=user.id)
 
         context = {
             "name": user.name,
-            "destination": trip_info.destination,
-            "tsd": trip_info.date_from,
-            "ted": trip_info.date_to,
-            "plan": trip_info.planned_by,
+            "trip_info": trip_info,
+            "other_trip": not_this_trip_info,
         }
         
         return render(request, 'travels.html', context)
@@ -93,26 +98,51 @@ def logout(request):
 
 def destination(request, id):
     trip = Trip.objects.get(id=int(id))
+    trip_info = trip.travels.all()
+    trip_user = trip_info.values("name")
+    print(trip_user)
     context = {
         "destination" : trip.destination,
         "description" : trip.description,
         "planned_by" : trip.planned_by,
         "travel_from" : trip.date_from,
         "travel_to" : trip.date_to,
-        "others" : trip.travels,
+        "trip_user" : trip_user,
     }
     return render(request, 'destination.html', context)
 
 
 
 def addtrip(request):
+    if request.method =="GET":
+        return render(request, 'addtrip.html')
     user = User.objects.get(id=request.session['user']['id'])
-    if request.method == "POST":
-        new_trip = Trip.objects.create(
-                                            destination = request.POST['destination'],
-                                            description = request.POST['description'],
-                                            planned_by = user.username,                                                                    
-                                            date_from = request.POST['traveldatefrom'],
-                                            date_to = request.POST['traveldateto'],
-                                            )
-    return render(request, 'addtrip.html')
+    if request.method == 'POST':
+        #creating session to mantain input info if an error occurs
+        request.session['reg_dest']     = request.POST['destination']
+        request.session['reg_desc']    = request.POST['description']
+        #data validation
+        errors = Trip.objects.trip_validator(request.POST)
+        if len(errors) > 0:
+            for key, value in errors.items():
+                messages.error(request, value)
+            return redirect('/travels/add')
+        # droping session info when register it's ok
+        request.session['reg_dest']     = ""
+        request.session['reg_desc']    = ""
+        Trip.objects.create(
+                            destination = request.POST['destination'],
+                            description = request.POST['description'],
+                            planned_by = user.name,                                                                    
+                            date_from = request.POST['traveldatefrom'],
+                            date_to = request.POST['traveldateto'],
+                            )
+        this_trip = Trip.objects.last()
+        user.trips.add(this_trip.id)
+    return redirect('/travels')
+
+def join(request, id):
+    trip = Trip.objects.get(id=int(id))
+    user = User.objects.get(id=request.session['user']['id'])
+    user.trips.add(trip.id)
+    return redirect ("/travels")

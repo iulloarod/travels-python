@@ -11,7 +11,7 @@ Travel Dashboard
         <a href="/logout">Log Out</a>
     </div>
     <div>
-        <h1>Hello, {{username}}!</h1>
+        <h1>Hello, {{name}}!</h1>
         <p>Your Trip Schedules</p>
         <table class="table table-striped">
             <thead>
@@ -24,11 +24,17 @@ Travel Dashboard
             </thead>
             <tbody>
                 <tr>
-                    <th scope="row">{{destination}}</th>
-                    <td>{{tsd}}</td>
-                    <td>{{ted}}</td>
-                    <td>{{plan}}</td>
+                {% for trips in trip_info %}
+                    <th scope="row"><a href="/travels/destination/{{trips.id}}">{{trips.destination}}</a></th>
+                    <td>{{trips.date_from}}</td>
+                    <td>{{trips.date_to}}</td>
+                    <td>{{trips.description}}</td>
                 </tr>
+                {% empty %}
+                    <tr>
+                        <td scope="row" colspan="2">No trips yet!.</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -45,12 +51,18 @@ Travel Dashboard
         </thead>
         <tbody>
             <tr>
-                <th scope="row">(())</th>
-                <td>(())</td>
-                <td>(())</td>
-                <td>(())</td>
-                <td>(())</td>
+                {% for trips in other_trip %}
+                <th scope="row">{{trips.planned_by}}</th>
+                <td><a href="/travels/destination/{{trips.id}}">{{trips.destination}}</a></td>
+                <td>{{trips.date_from}}</td>
+                <td>{{trips.date_to}}</td>
+                <td><a href="/join/{{trips.id}}">Join!</a></td>
             </tr>
+            {% empty %}
+                <tr>
+                    <td scope="row" colspan="2">No trips yet!.</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
     <div class="float-right">

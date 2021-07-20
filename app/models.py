@@ -4,15 +4,6 @@ import datetime
 from datetime import date
 
 
-class Trip (models.Model):
-    destination = models.CharField(max_length = 255)
-    description = models.TextField()
-    planned_by = models.CharField(max_length = 255, null=True)
-    date_from = models.DateField()
-    date_to = models.DateField()
-    #travels it's a list of trips asociated to a user
-
-
 class UserManager(models.Manager):
     def user_validator(self, postData):    
         errors = {}
@@ -29,6 +20,31 @@ class UserManager(models.Manager):
 
 
 
+
+
+class TripManager(models.Manager):
+    def trip_validator(self, postData):    
+        errors = {}
+
+        CHAR_REGEX = re.compile(r'^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$')
+
+        if len(postData['destination'])<6:
+            errors['destination'] = "Destination must be at least 6 characters long"
+
+        if len(postData['description'])<6:
+            errors['description'] = "Description must be at least 6 characters long"
+        
+        return errors
+
+
+class Trip (models.Model):
+    destination = models.CharField(max_length = 255)
+    description = models.TextField()
+    planned_by = models.CharField(max_length = 255, null=True)
+    date_from = models.DateField()
+    date_to = models.DateField()
+    objects = TripManager()
+    #travels it's a list of trips asociated to a user
 
 
 class UserManager(models.Manager):
