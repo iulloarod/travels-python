@@ -23,11 +23,11 @@ Add Plan
             </div>
             <div class="form-group form-inline">
                 <label class="font-weight-bold" for="tdf">Travel Date From :</label>
-                <input required name="traveldatefrom" type="date" class="form-control col-md-4 ml-auto" id="tdf">
+                <input required name="traveldatefrom" value="{{request.session.tdf}}" type="date" class="form-control col-md-4 ml-auto" id="tdf">
             </div>
             <div class="form-group form-inline">
                 <label class="font-weight-bold" for="tdt">Travel Date To :</label>
-                <input required name="traveldateto" type="date" class="form-control col-md-4 ml-auto" id="tdt">
+                <input required name="traveldateto" value="{{request.session.tdt}}" type="date" class="form-control col-md-4 ml-auto" id="tdt">
             </div>
             <div class="form-group form-inline">
                 <input name="plannedby" value="{{id}}" type="hidden" class="form-control col-md-4 ml-auto" id="pb">

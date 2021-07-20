@@ -98,10 +98,11 @@ def logout(request):
 
 def destination(request, id):
     trip = Trip.objects.get(id=int(id))
-    #no me sale esto...
-    trip_info = trip.travels.exclude()
+    user = User.objects.get(name=request.session['user']['name'])
+    print(user.name)
+    trip_info = trip.travels.exclude(name=user.name)
+    print(trip_info)
     trip_user = trip_info.values("name")
-    print(trip_user)
     context = {
         "destination" : trip.destination,
         "description" : trip.description,
@@ -122,6 +123,8 @@ def addtrip(request):
         #creating session to mantain input info if an error occurs
         request.session['reg_dest']     = request.POST['destination']
         request.session['reg_desc']    = request.POST['description']
+        request.session['reg_tdf']    = request.POST['traveldatefrom']
+        request.session['reg_tdt']    = request.POST['traveldateto']
         #data validation
         errors = Trip.objects.trip_validator(request.POST)
         if len(errors) > 0:
@@ -134,6 +137,8 @@ def addtrip(request):
         # droping session info when register it's ok
         request.session['reg_dest']     = ""
         request.session['reg_desc']    = ""
+        request.session['reg_tdf']    = ""
+        request.session['reg_tdt']    = ""
         Trip.objects.create(
                             destination = request.POST['destination'],
                             description = request.POST['description'],
