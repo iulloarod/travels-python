@@ -20,7 +20,7 @@ def registration(request):
         if len(errors) > 0:
             for key, value in errors.items():
                 messages.error(request, value)
-            return redirect('')
+            return redirect('/')
         # username duplicate finder
         new_username_check = request.POST['username']
         registered_username = User.objects.filter(username=new_username_check)
@@ -98,7 +98,8 @@ def logout(request):
 
 def destination(request, id):
     trip = Trip.objects.get(id=int(id))
-    trip_info = trip.travels.all()
+    #no me sale esto...
+    trip_info = trip.travels.exclude()
     trip_user = trip_info.values("name")
     print(trip_user)
     context = {
