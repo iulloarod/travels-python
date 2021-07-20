@@ -4,24 +4,6 @@ import datetime
 from datetime import date
 
 
-class UserManager(models.Manager):
-    def user_validator(self, postData):    
-        errors = {}
-
-        if len(postData['Destination']) == "":
-            errors['Destination'] = "Destination must be entered"
-
-        if len(postData['description']) == "":
-            errors['description'] = "Description must be entered"
-
-        
-
-        return errors
-
-
-
-
-
 class TripManager(models.Manager):
     def trip_validator(self, postData):    
         errors = {}
@@ -33,7 +15,7 @@ class TripManager(models.Manager):
 
         if len(postData['description'])<6:
             errors['description'] = "Description must be at least 6 characters long"
-        
+                
         return errors
 
 

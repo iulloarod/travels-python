@@ -81,7 +81,7 @@ def travels(request):
         not_this_trip_info = Trip.objects.exclude(travels=user.id)
 
         context = {
-            "name": user.name,
+            "username": user.username,
             "trip_info": trip_info,
             "other_trip": not_this_trip_info,
         }
@@ -127,6 +127,9 @@ def addtrip(request):
             for key, value in errors.items():
                 messages.error(request, value)
             return redirect('/travels/add')
+        if datesValidator(request.POST['traveldatefrom'], request.POST['traveldateto']) == "False":
+            messages.error(request,'Error : End date should be at least 1 day later than the start date')
+            return redirect('/travels/add')
         # droping session info when register it's ok
         request.session['reg_dest']     = ""
         request.session['reg_desc']    = ""
@@ -146,3 +149,25 @@ def join(request, id):
     user = User.objects.get(id=request.session['user']['id'])
     user.trips.add(trip.id)
     return redirect ("/travels")
+
+
+
+def datesValidator(traveldatefrom, traveldateto):
+# format to date time and then do a substraction
+    start = traveldatefrom
+    end = traveldateto
+# convert to datetime
+    start_date = datetime.strptime(start, "%Y-%m-%d")
+    end_date = datetime.strptime(end, "%Y-%m-%d")
+#calculating
+    trip_duration = (start_date - end_date).days
+    print (trip_duration)
+    if trip_duration >= 1: 
+        return "False"
+    elif trip_duration == 0:
+        return "False"
+    else: 
+        return "True"
+
+
+
